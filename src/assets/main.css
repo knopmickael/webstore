@@ -1,0 +1,15 @@
+@import './reset.css';
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* body {
+  @apply bg-gray-100;
+}
+
+@layer components {
+  .btn {
+    @apply bg-[#00FF00] text-white py-3;
+  }
+} */
