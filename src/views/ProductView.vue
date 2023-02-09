@@ -1,7 +1,7 @@
 <template>
   <div class="container mx-auto flex items-center flex-wrap pt-12 p-6">
     <div v-if="pending">
-      <p>Aguardando produto do servidor...</p>
+      <p>Carregando produto...</p>
     </div>
     <div v-else class="flex flex-col md:flex-row space-y-16 md:space-y-0 md:space-x-4 lg:py-20 lg:items-center">
       <div class="md:w-1/2">
@@ -22,7 +22,7 @@ import { ref, onMounted } from 'vue';
 
 export default {
   setup() {
-    const route = useRoute()
+    const route = useRoute();
     const product = ref({});
     const pending = ref(true);
 
