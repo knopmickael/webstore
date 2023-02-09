@@ -1,14 +1,18 @@
 <template>
-  <div>
+  <div class="container mx-auto flex items-center flex-wrap pt-12 p-6">
     <div v-if="pending">
       <p>Aguardando produto do servidor...</p>
     </div>
-    <div v-else>
-      <p>{{ product.title }}</p>
-      <p>{{ product.description }}</p>
-      <p>{{ product.price }}</p>
+    <div v-else class="flex flex-col md:flex-row space-y-8 md:space-y-0 md:space-x-4 lg:py-20 lg:items-center">
+      <div class="md:w-1/2">
+        <img :src="product.image" :alt="product.title" class="md:max-h-96 mx-auto">
+      </div>
+      <div class="space-y-6 md:w-1/2">
+        <h2 class="text-3xl font-bold text-center md:text-left">{{ product.title }}</h2>
+        <p class="px-4 text-justify md:px-0">{{ product.description }}</p>
+        <p class="text-2xl font-bold text-right">$ {{ product.price }}</p>
+      </div>
     </div>
-
   </div>
 </template>
 
