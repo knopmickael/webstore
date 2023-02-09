@@ -58,12 +58,21 @@ import { ref, onMounted, reactive } from 'vue';
 
 export default {
   setup() {
+    const screenWidth = ref(0);
     const products = reactive([]);
     const pending = ref(true);
 
+    const checkWindowWidth = () => {
+      screenWidth.value = window.innerWidth;
+      window.addEventListener('resize', () => {
+        screenWidth.value = window.innerWidth;
+      });
+    };
+
     const fetchProducts = async () => {
       try {
-        const res = await fetch('https://fakestoreapi.com/products');
+        let limit = screenWidth.value <= 768 ? '4' : screenWidth.value >= 1280 ? '8' : '6';
+        const res = await fetch('https://fakestoreapi.com/products?limit=' + limit);
         const data = await res.json();
         products.splice(0, products.length, ...data);
         pending.value = false;
@@ -73,6 +82,7 @@ export default {
     };
 
     onMounted(() => {
+      checkWindowWidth();
       fetchProducts();
     });
 
