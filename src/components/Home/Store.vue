@@ -36,14 +36,14 @@
       </div>
       <div v-else class="container mx-auto flex items-center flex-wrap">
         <div v-for="product in products" :key="product.id" class="w-full md:w-1/3 xl:w-1/4 p-6 flex flex-col">
-          <a href="#">
+          <RouterLink :to="`/products/${product.id}`">
             <img class="hover:grow hover:shadow-lg"
               :src="product.image">
             <div class="pt-3 flex items-center justify-between">
               <p class="">{{ product.title }}</p>
             </div>
             <p class="pt-1 text-gray-900">$ {{ product.price }}</p>
-          </a>
+          </RouterLink>
         </div>
       </div>
 
@@ -53,6 +53,7 @@
 </template>
 
 <script>
+import { RouterLink } from 'vue-router'
 import { ref, onMounted, reactive } from 'vue';
 
 export default {
