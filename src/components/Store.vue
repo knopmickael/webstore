@@ -2,18 +2,18 @@
   <section class="container mx-auto flex items-center flex-wrap pt-14">
 
     <nav id="store" class="w-full z-30 top-0 px-6 py-1">
-      <div class="w-full container mx-auto flex flex-wrap items-center justify-between mt-0 px-2 py-3">
+      <div class="w-full container mx-auto flex flex-col md:flex-row flex-wrap items-center justify-between mt-0 px-2 py-3 space-y-6 md:space-y-0">
 
         <a class="uppercase tracking-wide no-underline hover:no-underline font-bold text-gray-800 text-xl " href="#">
           Store
         </a>
 
-        <div v-if="pendingCategories">
+        <div v-if="loadingCategories">
           <p>Carregando categorias...</p>
         </div>
-        <div v-else class="flex divide-x divide-black divide-solid text-sm xl:text-lg">
+        <div v-else class="flex divide-x divide-black divide-solid text-sm xl:text-md">
           <div v-for="category, index in categories" :key="index">
-            <button @click="filterProductsByCategory(category)">
+            <button @click="filterProductsByCategory(category)" class="h-full flex items-center">
               <p class="px-2 lg:px-4 hover:underline" :class="activeCategory == category ? 'font-bold' : ''">{{ category.split(' ').map(word => word.replace(/^\w/, c => c.toUpperCase())).join(' ') }}</p>
             </button>
           </div>
@@ -40,10 +40,10 @@
       </div>
     </nav>
 
-    <div v-if="pendingProducts" class="text-center mt-12 w-full">
+    <div v-if="loadingProducts" class="text-center mt-12 w-full">
       <p>Carregando produtos...</p>
     </div>
-    <div v-else class="container mx-auto flex items-center flex-wrap">
+    <div v-else class="container mx-auto flex items-center flex-wrap lg:mt-12">
       <div v-for="product in products" :key="product.id" class="w-full md:w-1/3 xl:w-1/4 p-6 flex flex-col text-center">
         <RouterLink :to="`/products/${product.id}`" class="space-y-4">
           <img class="hover:grow hover:opacity-70 max-h-56 mx-auto"
@@ -66,9 +66,9 @@ import { ref, onMounted, reactive } from 'vue';
 export default {
   setup(props) {
     const screenWidth = ref(0);
-    const pendingCategories = ref(true);
+    const loadingCategories = ref(true);
     const categories = reactive([]);
-    const pendingProducts = ref(true);
+    const loadingProducts = ref(true);
     const products = reactive([]);
     const activeCategory = ref(props.category);
     const router = ref(useRouter());
@@ -86,7 +86,7 @@ export default {
         const data = await res.json();
         // let capitalizedStrings = data.map(string => string.split(' ').map(word => word.replace(/^\w/, c => c.toUpperCase())).join(' '));
         categories.splice(0, categories.length, ...data);
-        pendingCategories.value = false;
+        loadingCategories.value = false;
         
       } catch (error) {
         console.error(error);
@@ -108,7 +108,7 @@ export default {
         const res = await fetch(url);
         const data = await res.json();
         products.splice(0, products.length, ...data);
-        pendingProducts.value = false;
+        loadingProducts.value = false;
         
       } catch (error) {
         console.error(error);
@@ -116,11 +116,11 @@ export default {
     };
 
     const filterProductsByCategory = async (category) => {
-      pendingProducts.value = true;
+      loadingProducts.value = true;
       let routeHandler = router.value
       if (routeHandler.currentRoute.name != 'categories')
         routeHandler.push({ path: `/categories/${category}` });
-      else {pendingProducts
+      else {loadingProducts
         activeCategory.value = category;
         fetchProducts();
       }
@@ -134,9 +134,9 @@ export default {
 
     return {
       categories,
-      pendingCategories,
+      loadingCategories,
       products,
-      pendingProducts,
+      loadingProducts,
       activeCategory,
       filterProductsByCategory
     };
