@@ -2,8 +2,7 @@
   <section class="container mx-auto flex items-center flex-wrap pt-14">
 
     <nav id="store" class="w-full z-30 top-0 px-6 py-1">
-      <div
-        class="w-full container mx-auto flex flex-col md:flex-row flex-wrap items-center justify-between mt-0 px-2 py-3 space-y-6 md:space-y-0">
+      <div class="w-full container mx-auto flex flex-col md:flex-row flex-wrap items-center justify-between mt-0 px-2 py-3 space-y-6 md:space-y-0">
 
         <a class="uppercase tracking-wide no-underline hover:no-underline font-bold text-gray-800 text-xl " href="#">
           Store
@@ -12,7 +11,7 @@
         <div v-if="loadingCategories">
           <p>Carregando categorias...</p>
         </div>
-        <div v-else class="flex divide-x divide-black divide-solid text-sm xl:text-md">
+        <div v-else class="flex divide-x divide-black divide-solid text-xs xl:text-md">
           <div v-for="category, index in categories" :key="index">
             <button @click="filterProductsByCategory(category)" class="h-full flex items-center">
               <p class="px-2 lg:px-4 hover:underline" :class="activeCategory == category ? 'font-bold' : ''">{{
@@ -22,30 +21,35 @@
           </div>
         </div>
 
-        <div v-if="!loadingProducts" class="flex items-center space-x-2" id="store-nav-content">
-          <a class="pl-3 inline-block no-underline hover:text-black" href="#">
-            <svg class="fill-current hover:text-black" xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-              viewBox="0 0 24 24">
-              <path
-                d="M10,18c1.846,0,3.543-0.635,4.897-1.688l4.396,4.396l1.414-1.414l-4.396-4.396C17.365,13.543,18,11.846,18,10 c0-4.411-3.589-8-8-8s-8,3.589-8,8S5.589,18,10,18z M10,4c3.309,0,6,2.691,6,6s-2.691,6-6,6s-6-2.691-6-6S6.691,4,10,4z" />
-            </svg>
-          </a>
+        <div class="flex items-center justify-center space-x-4 w-full" id="store-nav-content">
+          <div class="flex items-center space-x-2">
+            <button @click="showSearchBar = !showSearchBar" class="inline-block no-underline hover:text-black">
+              <svg class="fill-black opacity-30 transition-all hover:opacity-100" :class="!showSearchBar ? '' : 'opacity-100'" xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                viewBox="0 0 24 24">
+                <path
+                  d="M10,18c1.846,0,3.543-0.635,4.897-1.688l4.396,4.396l1.414-1.414l-4.396-4.396C17.365,13.543,18,11.846,18,10 c0-4.411-3.589-8-8-8s-8,3.589-8,8S5.589,18,10,18z M10,4c3.309,0,6,2.691,6,6s-2.691,6-6,6s-6-2.691-6-6S6.691,4,10,4z" />
+              </svg>
+            </button>
+            <input v-model="searchProduct" type="search" class="outline-none transition-all" :class="showSearchBar ? 'border-b-2 border-gray-600 px-1 w-56' : 'w-0'">
+          </div>
 
-          <select v-model="orderBy" class="text-xs cursor-pointer">
+          <select  v-if="!loadingProducts" v-model="orderBy" class="text-xs cursor-pointer p-2 rounded-lg shadow-md transition-all hover:shadow-lg hover:bg-gray-100 outline-none">
             <option value="">Order products...</option>
             <option v-for="option, index in orderByOptions" :value="option.value" :key="index">
               {{ option.label }}
             </option>
           </select>
           
-          <svg @click="orderAsc = (orderBy != '') ? true : orderAsc" xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="#000" class="bi bi-chevron-double-down cursor-pointer" viewBox="0 0 16 16" :class="!orderAsc || orderBy == '' ? 'opacity-30' : ''">
-            <path fill-rule="evenodd" d="M1.646 6.646a.5.5 0 0 1 .708 0L8 12.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z"/>
-            <path fill-rule="evenodd" d="M1.646 2.646a.5.5 0 0 1 .708 0L8 8.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z"/>
-          </svg>
-          <svg @click="orderAsc = (orderBy != '') ? false : orderAsc" xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="#000" class="bi bi-chevron-double-down cursor-pointer" viewBox="0 0 16 16" :class="orderAsc || orderBy == '' ? 'opacity-30' : ''">
-            <path fill-rule="evenodd" d="M7.646 2.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1-.708.708L8 3.707 2.354 9.354a.5.5 0 1 1-.708-.708l6-6z"/>
-            <path fill-rule="evenodd" d="M7.646 6.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1-.708.708L8 7.707l-5.646 5.647a.5.5 0 0 1-.708-.708l6-6z"/>
-          </svg>
+          <div  v-if="!loadingProducts" class="flex space-x-2">
+            <svg @click="orderAsc = (orderBy != '') ? true : orderAsc" xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="#000" class="bi bi-chevron-double-down cursor-pointer transition-all hover:scale-125" viewBox="0 0 16 16" :class="!orderAsc || orderBy == '' ? 'opacity-30' : ''">
+              <path fill-rule="evenodd" d="M1.646 6.646a.5.5 0 0 1 .708 0L8 12.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z"/>
+              <path fill-rule="evenodd" d="M1.646 2.646a.5.5 0 0 1 .708 0L8 8.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z"/>
+            </svg>
+            <svg @click="orderAsc = (orderBy != '') ? false : orderAsc" xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="#000" class="bi bi-chevron-double-down cursor-pointer transition-all hover:scale-125" viewBox="0 0 16 16" :class="orderAsc || orderBy == '' ? 'opacity-30' : ''">
+              <path fill-rule="evenodd" d="M7.646 2.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1-.708.708L8 3.707 2.354 9.354a.5.5 0 1 1-.708-.708l6-6z"/>
+              <path fill-rule="evenodd" d="M7.646 6.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1-.708.708L8 7.707l-5.646 5.647a.5.5 0 0 1-.708-.708l6-6z"/>
+            </svg>
+          </div>
         </div>
       </div>
     </nav>
@@ -54,7 +58,7 @@
       <p>Carregando produtos...</p>
     </div>
     <div v-else class="container mx-auto flex items-baseline flex-wrap lg:mt-12">
-      <div v-for="product in products" :key="product.id"
+      <div v-for="product in filteredProducts" :key="product.id"
         class="w-full md:w-1/3 xl:w-1/4 p-6 flex flex-col text-center text-xs">
         <RouterLink :to="`/products/${product.id}`" class="space-y-1">
           <img class="hover:grow hover:opacity-70 max-h-56 mx-auto" :src="product.image">
@@ -71,17 +75,20 @@
 
 <script>
 import { RouterLink, useRouter } from 'vue-router'
-import { ref, onMounted, reactive, watch } from 'vue';
+import { ref, onMounted, reactive, watch, computed } from 'vue';
 
 export default {
   setup(props) {
     const screenWidth = ref(0);
+    const router = ref(useRouter());
+
     const loadingCategories = ref(true);
     const categories = reactive([]);
+    const activeCategory = ref(props.category);
+
     const loadingProducts = ref(true);
     const products = reactive([]);
-    const activeCategory = ref(props.category);
-    const router = ref(useRouter());
+    
     const orderAsc = ref(true);
     const orderBy = ref("");
     const orderByOptions = ref([
@@ -89,6 +96,9 @@ export default {
       { value: 'price', label: "Price" },
       { value: 'rate', label: "Rate" }
     ]);
+
+    const showSearchBar = ref(false);
+    const searchProduct = ref("");
 
     const checkWindowWidth = () => {
       screenWidth.value = window.innerWidth;
@@ -132,7 +142,7 @@ export default {
       }
     };
 
-    const filterProductsByCategory = async (category) => {
+    const filterProductsByCategory = async category => {
       loadingProducts.value = true;
       let routeHandler = router.value
       if (routeHandler.currentRoute.name != 'categories')
@@ -167,7 +177,11 @@ export default {
             break;
         }
       });
-    }
+    };
+
+    const filteredProducts = computed(() => {
+      return products.filter(product => product.title.toLowerCase().includes(searchProduct.value.toLowerCase()));
+    });
 
     watch(orderBy, () => sortProducts());
     watch(orderAsc, () => sortProducts());
@@ -181,13 +195,15 @@ export default {
     return {
       categories,
       loadingCategories,
-      products,
+      filteredProducts,
       loadingProducts,
       activeCategory,
       filterProductsByCategory,
       orderAsc,
       orderBy,
-      orderByOptions
+      orderByOptions,
+      showSearchBar,
+      searchProduct
     };
   },
   props: {
