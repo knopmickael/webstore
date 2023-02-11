@@ -1,10 +1,10 @@
 <template>
-  <section class="container mx-auto flex items-center flex-wrap pt-14">
+  <section class="container mx-auto pt-14">
 
     <nav id="store" class="w-full z-30 top-0 px-6 py-1">
-      <div class="w-full container mx-auto flex flex-col md:flex-row flex-wrap items-center justify-between mt-0 px-2 py-3 space-y-6 md:space-y-0">
+      <div class="w-full container mx-auto flex flex-col lg:flex-row items-center justify-between mt-0 px-2 py-3 space-y-6 lg:space-y-0">
 
-        <a class="uppercase tracking-wide no-underline hover:no-underline font-bold text-gray-800 text-xl " href="#">
+        <a class="uppercase tracking-wide no-underline hover:no-underline font-bold text-gray-800 text-xl" href="#">
           Store
         </a>
 
@@ -21,16 +21,16 @@
           </div>
         </div>
 
-        <div class="flex items-center justify-center space-x-4 w-full" id="store-nav-content">
+        <div class="flex items-center justify-center space-x-4">
           <div class="flex items-center space-x-2">
-            <button @click="showSearchBar = !showSearchBar" class="inline-block no-underline hover:text-black">
+            <button id="search-product-btn" @click="handleShowSearchBar" class="inline-block no-underline hover:text-black">
               <svg class="fill-black opacity-30 transition-all hover:opacity-100" :class="!showSearchBar ? '' : 'opacity-100'" xmlns="http://www.w3.org/2000/svg" width="24" height="24"
                 viewBox="0 0 24 24">
                 <path
                   d="M10,18c1.846,0,3.543-0.635,4.897-1.688l4.396,4.396l1.414-1.414l-4.396-4.396C17.365,13.543,18,11.846,18,10 c0-4.411-3.589-8-8-8s-8,3.589-8,8S5.589,18,10,18z M10,4c3.309,0,6,2.691,6,6s-2.691,6-6,6s-6-2.691-6-6S6.691,4,10,4z" />
               </svg>
             </button>
-            <input v-model="searchProduct" type="search" class="outline-none transition-all" :class="showSearchBar ? 'border-b-2 border-gray-600 px-1 w-56' : 'w-0'">
+            <input id="search-product-bar" v-model="searchProduct" type="search" class="outline-none transition-all" :class="showSearchBar ? 'border-b-2 border-gray-600 px-1 w-40 md:w-56' : 'w-0'">
           </div>
 
           <select  v-if="!loadingProducts" v-model="orderBy" class="text-xs cursor-pointer p-2 rounded-lg shadow-md transition-all hover:shadow-lg hover:bg-gray-100 outline-none">
@@ -57,7 +57,7 @@
     <div v-if="loadingProducts" class="text-center mt-12 w-full">
       <p>Carregando produtos...</p>
     </div>
-    <div v-else class="container mx-auto flex items-baseline flex-wrap lg:mt-12">
+    <div v-else class="container mx-auto flex items-baseline flex-wrap md:mt-4 lg:mt-8">
       <div v-for="product in filteredProducts" :key="product.id"
         class="w-full md:w-1/3 xl:w-1/4 p-6 flex flex-col text-center text-xs">
         <RouterLink :to="`/products/${product.id}`" class="space-y-1">
@@ -179,12 +179,32 @@ export default {
       });
     };
 
+    const handleShowSearchBar = () => {
+      showSearchBar.value = !showSearchBar.value;
+      document.getElementById('search-product-bar').focus();
+    };
+
     const filteredProducts = computed(() => {
       return products.filter(product => product.title.toLowerCase().includes(searchProduct.value.toLowerCase()));
     });
 
     watch(orderBy, () => sortProducts());
     watch(orderAsc, () => sortProducts());
+
+    watch(showSearchBar, value => {
+      if (value == true) {
+        setTimeout(() => {
+          const handleClick = e => {
+            if (!['search-product-bar', 'search-product-btn'].includes(e.target.id) && searchProduct.value.length === 0) {
+              searchProduct.value = "";
+              showSearchBar.value = false;
+              document.removeEventListener("click", handleClick);
+            }
+          };
+          document.addEventListener("click", handleClick);
+        }, 1000);
+      }
+    });
 
     onMounted(() => {
       checkWindowWidth();
@@ -203,7 +223,8 @@ export default {
       orderBy,
       orderByOptions,
       showSearchBar,
-      searchProduct
+      searchProduct,
+      handleShowSearchBar
     };
   },
   props: {
