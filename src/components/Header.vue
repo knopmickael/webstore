@@ -41,8 +41,7 @@
       </div>
 
       <div class="order-2 md:order-3 flex items-center" id="nav-content">
-
-        <a class="pl-3 inline-block no-underline hover:text-black" href="#">
+        <button @click="$emit('openCartModal')" class="pl-3 inline-block no-underline hover:text-black">
           <svg class="fill-current hover:text-black" xmlns="http://www.w3.org/2000/svg" width="24" height="24"
             viewBox="0 0 24 24">
             <path
@@ -50,19 +49,21 @@
             <circle cx="10.5" cy="18.5" r="1.5" />
             <circle cx="17.5" cy="18.5" r="1.5" />
           </svg>
-        </a>
-
+        </button>
       </div>
     </div>
   </nav>
 </template>
 
 <script>
-import { RouterLink, RouterView } from 'vue-router'
+import { useRouter } from 'vue-router'
+
 export default {
-  methods: {
-    async goToStoreSection() {
-      this.$router.push("/");
+  setup() {
+    const router = useRouter()
+
+    function goToStoreSection() {
+      router.push("/");
       setTimeout(() => {
         try {
           const storeSection = document.querySelector("#store-section");
@@ -72,6 +73,10 @@ export default {
         }
       }, 1000);
     }
+
+    return {
+      goToStoreSection
+    }
   }
-};
+}
 </script>

@@ -7,7 +7,7 @@
 </template>
 
 <script setup>
-import HomeCarousel from '../components/Home/Carousel.vue'
-import Store from '../components/Store.vue'
-import HomeAbout from '../components/Home/About.vue'
+import HomeCarousel from '@/components/Home/Carousel.vue'
+import Store from '@/components/Store.vue'
+import HomeAbout from '@/components/Home/About.vue'
 </script>
