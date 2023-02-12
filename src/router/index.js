@@ -1,7 +1,9 @@
 import { createRouter, createWebHistory } from 'vue-router'
 
+const base_url = process.env.NODE_ENV === 'production' ? '/webstore/' : '/';
+
 const router = createRouter({
-  history: createWebHistory(import.meta.env.BASE_URL),
+  history: createWebHistory(base_url),
   routes: [
     {
       path: '/',
