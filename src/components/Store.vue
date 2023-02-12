@@ -116,7 +116,7 @@ export default {
         loadingCategories.value = false;
 
       } catch (error) {
-        console.error(error);
+        console.log('Error: ' + error);
       }
     };
 
@@ -138,7 +138,7 @@ export default {
         loadingProducts.value = false;
 
       } catch (error) {
-        console.error(error);
+        console.log('Error: ' + error);
       }
     };
 

@@ -69,7 +69,7 @@ export default {
           const storeSection = document.querySelector("#store-section");
           storeSection.scrollIntoView({ behavior: "smooth" });
         } catch (error) {
-          console.error(error);
+          console.log('Error: ' + error);
         }
       }, 1000);
     }
