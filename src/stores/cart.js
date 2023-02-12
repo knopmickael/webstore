@@ -30,6 +30,12 @@ export const cartStore = defineStore('cart', {
       })
     },
     /**
+     * @param {string} title
+     */
+    itemAlreadyExists(title) {
+      return this.items.find(item => item.title === title)
+    },
+    /**
      * @param {number} id
      * @param {number} quantity
      */

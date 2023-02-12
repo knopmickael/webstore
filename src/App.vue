@@ -3,7 +3,7 @@
     <PageHeader @open-cart-modal="toggleCartModal" />
 
     <main>
-      <RouterView />
+      <RouterView @open-cart-modal="toggleCartModal"/>
     </main>
 
     <Cart v-if="openCartModal" @close-cart-modal="toggleCartModal" />

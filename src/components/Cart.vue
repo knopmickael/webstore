@@ -2,7 +2,7 @@
   <div class="relative z-10" aria-labelledby="slide-over-title" role="dialog" aria-modal="true">
     <div id="cart-store-bg" class="fixed inset-0 bg-gray-500 bg-opacity-0 transition-opacity"></div>
     <div id="cart-store-modal" class="fixed inset-0 overflow-hidden transition-all translate-x-full">
-      <div class="absolute inset-0 overflow-hidden">
+      <div id="triggerable-modal-closer" class="absolute inset-0 overflow-hidden">
         <div class="pointer-events-none fixed inset-y-0 right-0 flex max-w-full pl-10">
           <div class="pointer-events-auto w-screen max-w-md">
             <div class="flex h-full flex-col overflow-hidden bg-white shadow-xl pr-3">
@@ -32,12 +32,10 @@
                         <div class="ml-4 flex flex-1 flex-col">
                           <div>
                             <div class="flex justify-between text-base font-medium text-gray-900">
-                              <h3>
-                                <a href="#">{{ product.title }}</a>
-                              </h3>
+                              <h3 class="font-bold text-sm">{{ product.title }}</h3>
                               <p class="ml-4">${{ product.price }}</p>
                             </div>
-                            <p class="mt-1 text-sm text-gray-500">{{ product.category }}</p>
+                            <p class="mt-1 text-xs text-gray-500">{{ product.category.split(' ').map(word => word.replace(/^\w/, c => c.toUpperCase())).join(' ') }}</p>
                           </div>
                           <div class="flex flex-1 items-end justify-between text-sm">
                             <input type="number" v-model="product.quantity" min="1" class="px-2 w-20 rounded h-8 shadow-lg" />
@@ -130,13 +128,24 @@ export default {
       }
     };
 
+    const closeCart = () => toggleCartAnimation('close');
+
+    const listenBgClick = () => {
+      const handleClick = e => {
+        if ('triggerable-modal-closer' === e.target.id) {
+          closeCart();
+          document.removeEventListener("click", handleClick);
+        }
+      };
+      document.addEventListener("click", handleClick);
+    };
+
     onMounted(() => {
       toggleCartAnimation('open');
       products.value = cart.items;
       total.value = cart.total;
+      listenBgClick();
     });
-
-    const closeCart = () => toggleCartAnimation('close');
 
     cart.$subscribe((mutation, state) => {
       products.value = state.items

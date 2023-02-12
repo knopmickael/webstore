@@ -11,9 +11,9 @@
         <h2 class="text-3xl font-bold text-center md:text-left">{{ product.title }}</h2>
         <p class="px-4 text-justify md:px-0">{{ product.description }}</p>
         <div class="flex items-center justify-between">
-          <div class="flex items-center space-x-4">
-            <input type="number" v-model="quantity" min="1" class="px-2 w-20 rounded h-8 shadow-lg" />
-            <button @click="addToCart" class="bg-gray-600 transition-all hover:bg-gray-500 p-1 pl-2 rounded shadow-lg">
+          <div :title="alreadyExists(product.title) ? 'Product already added to cart' : null" class="flex items-center space-x-4">
+            <input :disabled="alreadyExists(product.title)" type="number" v-model="quantity" min="1" class="px-2 w-20 rounded h-8 shadow-lg disabled:opacity-30" />
+            <button :disabled="alreadyExists(product.title)" @click="addToCart" class="bg-gray-600 transition-all hover:bg-gray-500 p-1 pl-2 rounded shadow-lg disabled:opacity-30 disabled:cursor-not-allowed disabled:hover:bg-gray-600">
               <svg fill="#FFF" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg"
                 xmlns:xlink="http://www.w3.org/1999/xlink" width="24" height="24" viewBox="0 0 902.86 902.86"
                 xml:space="preserve">
@@ -46,7 +46,8 @@ import { useRoute } from 'vue-router'
 import { ref, onMounted } from 'vue';
 
 export default {
-  setup() {
+  emits: ['openCartModal'],
+  setup(props, { emit }) {
     const route = useRoute();
     const product = ref({});
     const pending = ref(true);
@@ -60,11 +61,11 @@ export default {
         product.value = data;
         pending.value = false;
       } catch (error) {
-        console.error(error);
+        console.log('Error: ' + error);
       }
     };
 
-    const addToCart = () => {
+    const addToCart = async () => {
       try {
         cart.pushItem({
           title: product.value.title,
@@ -74,19 +75,25 @@ export default {
           price: product.value.price,
           quantity: quantity.value
         });
+        emit('openCartModal');
       } catch (error) {
         console.log('Error: ' + error);
       }
-    };   
+    };
 
-    onMounted(() => {
-      fetchProduct();
+    cart.$subscribe((mutation, state) => {
+      let title = product.value.title;
+      if (state.items.find(item => item.title === title))
+        quantity.value = state.items.filter(item => item.title === title)[0].quantity
     });
+
+    onMounted(async () => await fetchProduct());
 
     return {
       product,
       pending,
       quantity,
+      alreadyExists: cart.itemAlreadyExists,
       addToCart
     };
   }
