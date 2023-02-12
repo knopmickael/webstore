@@ -1,0 +1,1 @@
+import{p as o,o as r,s as t,x as a}from"./index-bf19b170.js";import{S as s}from"./Store-645b6896.js";const m={__name:"CategoriesView",setup(c){const e=o().params.slug;return(n,p)=>(r(),t(s,{category:a(e)},null,8,["category"]))}};export{m as default};
